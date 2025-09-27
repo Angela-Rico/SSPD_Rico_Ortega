@@ -1,0 +1,32 @@
+{
+  "constant_like": [
+    "3._Buenos_dias/_tardes,_mi_nombre_es__________________soy_encuestador/a_y_junto_a_la_Superintendencia_de_Servicios_Publicos_y_Domiciliarios_estamos_indagando_acerca_de_como_estan_siendo_atendidas_sus_peticiones,_quejas_y/o_reclamos._Su_participacion_es_voluntaria_y_tanto_su_identidad,_como_las_respuestas_suministradas_seran_de_caracter_confidencial._Esta_encuesta_toma_alrededor_de_10_minutos,_¿estaria_dispuesto(a)_a_responder_unas_preguntas?",
+    "4._¿Autoriza_a_la_Superservicios_para_hacer_tratamiento_de_sus_datos_personales,_de_acuerdo_con_lo_establecido_en_la_Ley_1581_de_2012_y_la_Politica_de_tratamiento_de_datos_personales_de_la_entidad_publicada_en_https://www.superservicios.gov.co/Politica-de-tratamiento-de-datos?",
+    "6._Tipo_de_Documento",
+    "DireccionT",
+    "17._Pertenece_a_alguna_de_las_siguientes_etnias",
+    "Otro.9"
+  ],
+  "high_cardinality": [
+    "GlobalID",
+    "5._Para_iniciar,_¿me_puede_decir_nombres_y_apellidos_completos?",
+    "7.1._Proporcione_el_correo",
+    "Otro.1",
+    "Otro.11",
+    "Otro.12",
+    "Otro.13",
+    "Otro.16",
+    "Otro.17",
+    "40.1._Numero_de_Factura",
+    "40.2._Cuenta_de_Contrato",
+    "Observaciones_del_Encuestador"
+  ],
+  "duplicate_rows": 0,
+  "candidate_ids": [
+    "ObjectID",
+    "GlobalID",
+    "CreationDate",
+    "EditDate",
+    "Duracion_(minutos)"
+  ]
+}

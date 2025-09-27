@@ -2,6 +2,7 @@
 import argparse
 import json
 import os
+import re
 from typing import Optional, Union
 
 import numpy as np
@@ -14,6 +15,17 @@ from src.eda.eda import (
     save_dictionary_csv, plot_missing_bar, plot_histograms,
     plot_boxplots, plot_correlation
 )
+
+def clean_filename(filename):
+    """Clean filename to avoid filesystem issues"""
+    # Remove or replace problematic characters
+    clean = re.sub(r'[/<>:"|?*]', '_', filename)
+    # Limit length to avoid filesystem limits
+    if len(clean) > 100:
+        clean = clean[:97] + "..."
+    # Remove multiple underscores
+    clean = re.sub(r'_+', '_', clean)
+    return clean.strip('_')
 
 def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser(
@@ -45,6 +57,21 @@ def main() -> None:
 
     logger.info(f"Leyendo datos: {args.input}")
     df = read_any(args.input, sep=args.sep, sheet=sheet)
+
+    # Handle case where read_any returns a dictionary (multiple sheets)
+    if isinstance(df, dict):
+        if sheet is None:
+            # If no sheet specified, use the first one
+            first_sheet = list(df.keys())[0]
+            logger.warning(f"Multiple sheets found. Using first sheet: {first_sheet}")
+            df = df[first_sheet]
+        else:
+            # Use specified sheet
+            if sheet in df:
+                df = df[sheet]
+            else:
+                logger.error(f"Sheet '{sheet}' not found. Available sheets: {list(df.keys())}")
+                return
 
     # Save interim copy with normalized column names
     df_cols_norm = df.copy()
@@ -79,13 +106,19 @@ def main() -> None:
     num = df_cols_norm.select_dtypes(include=[np.number])
     if num.shape[1] > 0:
         num.describe().to_csv("reports/numeric_summary.csv")
-    # Categorical freq (top 20)
+    
+    # Categorical freq (top 20) - with cleaned filenames
     cat = df_cols_norm.select_dtypes(exclude=[np.number])
     freq_out = []
     for c in cat.columns:
         vc = cat[c].value_counts(dropna=False).head(20)
-        vc.to_csv(f"reports/{c}_top20_value_counts.csv")
-        freq_out.append(c)
+        # Clean column name for filename
+        clean_col_name = clean_filename(c)
+        try:
+            vc.to_csv(f"reports/{clean_col_name}_top20_value_counts.csv")
+            freq_out.append(c)
+        except Exception as e:
+            logger.warning(f"No se pudo guardar archivo para columna '{c}': {e}")
 
     logger.info("Listo. Revisa carpeta 'reports' y 'reports/figures'.")
 
